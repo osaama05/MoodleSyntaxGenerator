@@ -39,7 +39,7 @@ namespace MoodleSyntaxGenerator
 
 		private void BtnGenerate_Click(object sender, EventArgs e)
 		{
-			txtBoxOutput.Text = _controller.GenerateNumericQuestion("What is 2+2?", 4, 0);
+			txtBoxOutput.Text = _controller.GenerateNumeric("What is 2+2?", 4, 0);
 		}
 
 		private void CmbSelect_SelectedIndexChanged(object sender, EventArgs e)

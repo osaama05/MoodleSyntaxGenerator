@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Generator\MoodleSyntaxGenerator.csproj" />
+    <ProjectReference Include="..\MoodleSyntaxGenerator\MoodleSyntaxGenerator.csproj" />
   </ItemGroup>
 
 </Project>

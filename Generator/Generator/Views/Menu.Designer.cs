@@ -1,4 +1,4 @@
-﻿namespace Generator
+﻿namespace MoodleSyntaxGenerator
 {
 	partial class Menu
 	{
@@ -30,9 +30,10 @@
 		{
 			cmbSelect = new ComboBox();
 			lblSelect = new Label();
-			btnEncode = new Button();
+			btnGenerate = new Button();
 			txtBoxOutput = new TextBox();
 			lblOutput = new Label();
+			btnCopy = new Button();
 			SuspendLayout();
 			// 
 			// cmbSelect
@@ -42,6 +43,7 @@
 			cmbSelect.Name = "cmbSelect";
 			cmbSelect.Size = new Size(265, 23);
 			cmbSelect.TabIndex = 0;
+			cmbSelect.SelectedIndexChanged += CmbSelect_SelectedIndexChanged;
 			// 
 			// lblSelect
 			// 
@@ -52,20 +54,23 @@
 			lblSelect.TabIndex = 1;
 			lblSelect.Text = "Valitse kysymysmuoto";
 			// 
-			// btnEncode
+			// btnGenerate
 			// 
-			btnEncode.BackColor = SystemColors.ControlLightLight;
-			btnEncode.Location = new Point(12, 303);
-			btnEncode.Name = "btnEncode";
-			btnEncode.Size = new Size(75, 23);
-			btnEncode.TabIndex = 2;
-			btnEncode.Text = "Luo";
-			btnEncode.UseVisualStyleBackColor = false;
+			btnGenerate.BackColor = SystemColors.ControlLightLight;
+			btnGenerate.Location = new Point(12, 303);
+			btnGenerate.Name = "btnGenerate";
+			btnGenerate.Size = new Size(75, 23);
+			btnGenerate.TabIndex = 2;
+			btnGenerate.Text = "Luo";
+			btnGenerate.UseVisualStyleBackColor = false;
+			btnGenerate.Click += BtnGenerate_Click;
 			// 
 			// txtBoxOutput
 			// 
 			txtBoxOutput.Location = new Point(12, 359);
+			txtBoxOutput.Multiline = true;
 			txtBoxOutput.Name = "txtBoxOutput";
+			txtBoxOutput.ReadOnly = true;
 			txtBoxOutput.Size = new Size(376, 23);
 			txtBoxOutput.TabIndex = 3;
 			// 
@@ -78,15 +83,26 @@
 			lblOutput.TabIndex = 4;
 			lblOutput.Text = "Ulostulo";
 			// 
+			// btnCopy
+			// 
+			btnCopy.Location = new Point(394, 359);
+			btnCopy.Name = "btnCopy";
+			btnCopy.Size = new Size(57, 23);
+			btnCopy.TabIndex = 5;
+			btnCopy.Text = "Copy";
+			btnCopy.UseVisualStyleBackColor = true;
+			btnCopy.Click += BtnCopy_Click;
+			// 
 			// Menu
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = Color.FromArgb(212, 207, 201);
 			ClientSize = new Size(800, 450);
+			Controls.Add(btnCopy);
 			Controls.Add(lblOutput);
 			Controls.Add(txtBoxOutput);
-			Controls.Add(btnEncode);
+			Controls.Add(btnGenerate);
 			Controls.Add(lblSelect);
 			Controls.Add(cmbSelect);
 			Name = "Menu";
@@ -99,8 +115,9 @@
 
 		private ComboBox cmbSelect;
 		private Label lblSelect;
-		private Button btnEncode;
+		private Button btnGenerate;
 		private TextBox txtBoxOutput;
 		private Label lblOutput;
+		private Button btnCopy;
 	}
 }

@@ -1,4 +1,7 @@
-namespace Generator
+using MoodleSyntaxGenerator.Controllers;
+using MoodleSyntaxGenerator.Logic;
+
+namespace MoodleSyntaxGenerator
 {
 	internal static class Program
 	{
@@ -11,7 +14,9 @@ namespace Generator
 			// To customize application configuration such as set high DPI settings or default font,
 			// see https://aka.ms/applicationconfiguration.
 			ApplicationConfiguration.Initialize();
-			Application.Run(new Menu());
+			SyntaxGenerator gen = new();
+			Controller controller = new(gen);
+			Application.Run(new Menu(controller));
 		}
 	}
 }

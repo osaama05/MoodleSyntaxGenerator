@@ -15,9 +15,14 @@ namespace MoodleSyntaxGenerator.Controllers
 			_generator = generator;
 		}
 
-		public string GenerateNumericQuestion(string question, int answer, decimal tolerance)
+		public string GenerateNumericQuestion(string question, int answer, decimal tolerance = 0)
 		{
 			return _generator.GenerateNumeric(question, answer, tolerance);
+		}
+
+		public string GenerateShortAnswers(string question, string answer, bool isCaseSensitive = false)
+		{
+			return _generator.GenerateShortAnswer(question, answer, isCaseSensitive);
 		}
 	}
 }

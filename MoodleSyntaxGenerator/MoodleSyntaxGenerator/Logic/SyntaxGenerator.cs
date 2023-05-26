@@ -37,12 +37,12 @@ namespace MoodleSyntaxGenerator.Logic
 
 			else
 			{
-				output = "{" + $"1:{question}" + "}";
+				output = "{" + $"1:{question}:" + "}";
 			}
 
 			foreach (var option in options)
 			{
-				output.Concat($" - [] {option}");
+				output = output + $" - [] {option}";
 			}
 
 			return output;
@@ -50,21 +50,21 @@ namespace MoodleSyntaxGenerator.Logic
 
 		public string GenerateDropdown(string text, string question, List<(string option, bool isCorrect)> options)
 		{
-			var output = "{" + $"1:{text}" + "}" + $"{question} " + "{1:";
+			var output = "{" + $"1:{text}:" + "}" + $" {question} " + "{1:";
 
 			foreach (var option in options)
 			{
 				if (option.isCorrect == true)
 				{
-					output.Concat($"{option.option} ={option.option}");
+					output = output + $"{option.option} ={option.option}";
 				}
 
 				else
 				{
-					output.Concat($" ~ {option.option}");
+					output = output + $" ~ {option.option}";
 				}
 			}
-			output.Concat("}.");
+			output = output + "}.";
 
 			return output;
 		}

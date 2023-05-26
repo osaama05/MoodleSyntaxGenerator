@@ -6,8 +6,8 @@ namespace MoodleSyntaxGenerator
 {
 	public partial class Menu : Form
 	{
-		private int selectedQuestion;
-		Controller _controller;
+		private int _selectedQuestion;
+		private readonly Controller _controller;
 
 
 		public Menu(Controller controller)
@@ -36,44 +36,90 @@ namespace MoodleSyntaxGenerator
 
 		private void BtnCopy_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetText(txtBoxOutput.Text);
+			if (string.IsNullOrWhiteSpace(txtBoxOutput.Text))
+			{
+				Clipboard.SetText(txtBoxOutput.Text);
+			}
 		}
 
 		private void BtnGenerate_Click(object sender, EventArgs e)
 		{
-			switch (selectedQuestion)
+			string output;
+			switch (_selectedQuestion)
 			{
 				case 0:
-					_controller.GenerateShortAnswers("", "");
+					output = _controller.GenerateShortAnswers("", "");
 					break;
 				case 1:
-					_controller.GenerateShortAnswers("", "", true);
+					output = _controller.GenerateShortAnswers("", "", true);
 					break;
 				case 2:
-					_controller.();
+					output = _controller.GenerateDropDown("", "", new List<(string, bool)>());
 					break;
 				case 3:
-					_controller.GenerateVerticalRadioButtons();
+					output = _controller.GenerateRadioButtons("", new List<string>());
 					break;
 				case 4:
-					_controller.GenerateHorizontalRadioButtons();
+					output = _controller.GenerateRadioButtons("", new List<string>(), true);
 					break;
 				case 5:
-					_controller.GenerateNumerical();
+					output = _controller.GenerateNumeric("", 0);
+					break;
+				default:
+					output = "";
+					MessageBox.Show("Et ole valinnut vastaustyyppiä");
+					break;
+			}
+			txtBoxOutput.Text = output;
+		}
+
+		private void CmbSelect_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			_selectedQuestion = cmbSelect.SelectedIndex;
+
+			switch (_selectedQuestion)
+			{
+				case 0:
+					CreateShortAnswerInputs();
+					break;
+				case 1:
+					CreateShortAnswerInputs();
+					break;
+				case 2:
+					CreateDropdownInputs();
+					break;
+				case 3:
+					CreateRadioButtonsInputs();
+					break;
+				case 4:
+					CreateRadioButtonsInputs();
+					break;
+				case 5:
+					CreateNumericInputs();
 					break;
 				default:
 					break;
 			}
 		}
 
-		private void CmbSelect_SelectedIndexChanged(object sender, EventArgs e)
+		private void CreateNumericInputs()
 		{
-			selectedQuestion = cmbSelect.SelectedIndex;
+			
 		}
 
-		public void SetOutput(string output)
+		private void CreateDropdownInputs() 
+		{ 
+			
+		}
+
+		private void CreateRadioButtonsInputs()
 		{
-			txtBoxOutput.Text = output;
+
+		}
+
+		private void CreateShortAnswerInputs()
+		{
+			
 		}
 	}
 }

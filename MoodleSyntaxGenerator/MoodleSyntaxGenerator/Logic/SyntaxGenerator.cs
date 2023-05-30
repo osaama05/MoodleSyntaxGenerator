@@ -69,7 +69,7 @@ namespace MoodleSyntaxGenerator.Logic
 			return output;
 		}
 
-		public string GenerateNumeric(string question, int answer, decimal tolerance = 0)
+		public string GenerateNumeric(string question, double answer, decimal tolerance = 0)
 		{
 			return "{" + $"1:{question}: ={answer}:{tolerance}" + "}";
 		}

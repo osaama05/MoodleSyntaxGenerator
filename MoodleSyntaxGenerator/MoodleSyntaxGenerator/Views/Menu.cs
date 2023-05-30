@@ -17,7 +17,7 @@ namespace MoodleSyntaxGenerator
 			AutoSize = true;
 			InitializeComponent();
 			InitializeSearch();
-			
+
 			CreateShortAnswerInputs();
 			CreateDropdownInputs();
 			CreateRadioButtonsInputs();
@@ -53,13 +53,13 @@ namespace MoodleSyntaxGenerator
 		{
 			string output;
 			var groupBox = _views[_selectedQuestion];
-			
+
 			switch (_selectedQuestion)
 			{
 				case 0:
 					TextBox? shortAnswerQuestion = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerQuestion");
 					TextBox? shortAnswerAnswer = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerAnswer");
-					
+
 					output = _controller.GenerateShortAnswers(shortAnswerQuestion.Text, shortAnswerAnswer.Text);
 					break;
 				case 1:
@@ -75,12 +75,12 @@ namespace MoodleSyntaxGenerator
 					break;
 				case 3:
 
-					
+
 					output = _controller.GenerateRadioButtons("", new List<string>());
 					break;
 				case 4:
 
-					
+
 					output = _controller.GenerateRadioButtons("", new List<string>(), true);
 					break;
 				case 5:
@@ -93,10 +93,10 @@ namespace MoodleSyntaxGenerator
 					{
 						output = _controller.GenerateNumeric(numericQuestion.Text, Convert.ToDouble(numericAnswer.Text));
 					}
-					
+
 					else
 					{
-						output = _controller.GenerateNumeric(numericQuestion.Text, Convert.ToDouble(numericAnswer.Text), Convert.ToDecimal(numericTolerance.Text)); 
+						output = _controller.GenerateNumeric(numericQuestion.Text, Convert.ToDouble(numericAnswer.Text), Convert.ToDecimal(numericTolerance.Text));
 					}
 					break;
 				default:
@@ -121,7 +121,7 @@ namespace MoodleSyntaxGenerator
 			// Show the new groupbox
 			if (_views[_selectedQuestion] != null)
 			{
-				_views[_selectedQuestion].Show(); 
+				_views[_selectedQuestion].Show();
 			}
 		}
 
@@ -195,7 +195,7 @@ namespace MoodleSyntaxGenerator
 				groupBox.Controls.Add(labelAnswer);
 				groupBox.Controls.Add(textBoxTolerance);
 				groupBox.Controls.Add(labelTolerance);
-				
+
 				groupBox.Hide();
 				Controls.Add(groupBox);
 				_views[5] = groupBox;
@@ -205,7 +205,105 @@ namespace MoodleSyntaxGenerator
 
 		private void CreateDropdownInputs()
 		{
+			string groupBoxName = "groupBoxDropdown";
+			GroupBox? groupBoxToFind = Controls.OfType<GroupBox>().FirstOrDefault(c => c.Name == groupBoxName);
 
+			if (!Controls.Contains(groupBoxToFind))
+			{
+				var location = cmbSelect.Location;
+
+				GroupBox groupBox = new()
+				{
+					Name = groupBoxName,
+					Location = new Point(location.X, location.Y + 30),
+					AutoSize = true
+				};
+
+				Label labelText = new()
+				{
+					Location = new Point(5, 15),
+					Name = "lblDropdownText",
+					Text = "Syötä teksti"
+				};
+
+				TextBox textBoxText = new()
+				{
+					Location = new Point(labelText.Location.X, labelText.Location.Y + 20),
+					Name = "txtBoxDropdownText",
+					Multiline = true
+				};
+
+				Label labelQuestion = new()
+				{
+					Location = new Point(labelText.Location.X + textBoxText.Width + 5, labelText.Location.Y),
+					Name = "lblDropdownQuestion",
+					Text = "Syötä kysymys"
+				};
+
+				TextBox textBoxQuestion = new()
+				{
+					Location = new Point(labelQuestion.Location.X, labelQuestion.Location.Y + 20),
+					Name = "txtBoxDropdownQuestion",
+					Multiline = true
+				};
+
+
+				Button btnAddAnswer = new()
+				{
+					Location = new Point(textBoxText.Location.X, textBoxText.Location.Y + 60),
+					Name = "btnAddAnswer",
+					Text = "Lisää kysymysvaihtoehto",
+					AutoSize = true
+				};
+
+				btnAddAnswer.Click += AddAnswerChoice;
+				groupBox.Controls.Add(textBoxText);
+				groupBox.Controls.Add(labelText);
+				groupBox.Controls.Add(textBoxQuestion);
+				groupBox.Controls.Add(labelQuestion);
+				groupBox.Controls.Add(btnAddAnswer);
+
+				groupBox.Hide();
+				Controls.Add(groupBox);
+				_views[2] = groupBox;
+			}
+		}
+
+		private void AddAnswerChoice(object sender, EventArgs e)
+		{
+			// Get the groupbox for a dropdown question
+			var groupBox = _views[2];
+			int amountOfAnswers = 0;
+
+			var startLocation = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownText").Location;
+			
+			foreach (CheckBox cBox in groupBox.Controls.OfType<CheckBox>())
+			{
+				amountOfAnswers += 1;
+			}
+
+			if (amountOfAnswers > 0)
+			{
+				startLocation = groupBox.Controls.OfType<CheckBox>().Last().Location;
+			}
+			
+			CheckBox checkBoxIsCorrect = new()
+			{
+				Location = new Point(startLocation.X, startLocation.Y + 20),
+				Name = "checkBoxIsCorrect" + (amountOfAnswers + 1),
+				Text = "Oikea vastaus"
+			};
+
+			TextBox textBoxAnswer = new()
+			{
+				Location = new Point(checkBoxIsCorrect.Location.X + 5, checkBoxIsCorrect.Location.Y),
+				Name = "txtBoxDropdownAnswer"
+			};
+
+			// Move the button down
+			groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnAddAnswer").Location = new Point(checkBoxIsCorrect.Location.X, checkBoxIsCorrect.Location.Y + 20);
+
+			groupBox.Controls.Add(checkBoxIsCorrect);
 		}
 
 		private void CreateRadioButtonsInputs()
@@ -262,25 +360,10 @@ namespace MoodleSyntaxGenerator
 					Multiline = true
 				};
 
-				Label labelIsCaseSensitive = new()
-				{
-					Location = new Point(labelAnswer.Location.X + textBoxAnswer.Width + 5, labelAnswer.Location.Y),
-					Name = "lblShortAnswerIsCaseSensitive",
-					Text = "Onko vastaus kirjainkoosta riippuvainen"
-				};
-
-				CheckBox checkBoxIsCaseSensitive = new()
-				{
-					Location = new Point(labelIsCaseSensitive.Location.X, labelIsCaseSensitive.Location.Y + 20),
-					Name = "checkBoxShortAnswerIsCaseSensitive"
-				};
-
 				groupBox.Controls.Add(textBoxQuestion);
 				groupBox.Controls.Add(labelQuestion);
 				groupBox.Controls.Add(textBoxAnswer);
 				groupBox.Controls.Add(labelAnswer);
-				groupBox.Controls.Add(checkBoxIsCaseSensitive);
-				groupBox.Controls.Add(labelIsCaseSensitive);
 
 				groupBox.Hide();
 				Controls.Add(groupBox);

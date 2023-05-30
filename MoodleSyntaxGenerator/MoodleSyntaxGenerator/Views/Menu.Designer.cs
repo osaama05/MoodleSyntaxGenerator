@@ -28,12 +28,15 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			components = new System.ComponentModel.Container();
 			cmbSelect = new ComboBox();
 			lblSelect = new Label();
 			btnGenerate = new Button();
 			txtBoxOutput = new TextBox();
 			lblOutput = new Label();
 			btnCopy = new Button();
+			errorProvider1 = new ErrorProvider(components);
+			((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
 			SuspendLayout();
 			// 
 			// cmbSelect
@@ -93,6 +96,10 @@
 			btnCopy.UseVisualStyleBackColor = true;
 			btnCopy.Click += BtnCopy_Click;
 			// 
+			// errorProvider1
+			// 
+			errorProvider1.ContainerControl = this;
+			// 
 			// Menu
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
@@ -107,6 +114,7 @@
 			Controls.Add(cmbSelect);
 			Name = "Menu";
 			Text = "Main Menu";
+			((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -119,5 +127,6 @@
 		private TextBox txtBoxOutput;
 		private Label lblOutput;
 		private Button btnCopy;
+		private ErrorProvider errorProvider1;
 	}
 }

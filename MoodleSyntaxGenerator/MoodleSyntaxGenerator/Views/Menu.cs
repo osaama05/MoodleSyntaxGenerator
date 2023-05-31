@@ -93,7 +93,20 @@ namespace MoodleSyntaxGenerator
 					output = _controller.GenerateDropDown(dropdownText.Text, dropdownQuestion.Text, answers);
 					break;
 				case 3:
+					List<string> radioAnswers = new();
+					int amountOfRadioAnswers = 0;
+					TextBox? radioQuestion = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioQuestion");
 
+					foreach (TextBox cBox in groupBox.Controls.OfType<TextBox>())
+					{
+						amountOfRadioAnswers++;
+						TextBox? radioAnswer = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioAnswer" + amountOfRadioAnswers);
+						// Only add the answer if there is something written in the textbox
+						if (!string.IsNullOrWhiteSpace(radioAnswer.Text))
+						{
+							radioAnswers.Add(radioAnswer.Text);
+						}
+					}
 
 					output = _controller.GenerateRadioButtons("", new List<string>());
 					break;
@@ -356,7 +369,7 @@ namespace MoodleSyntaxGenerator
 				Button btnAddAnswer = new()
 				{
 					Location = new Point(textBoxQuestion.Location.X, textBoxQuestion.Location.Y + 30),
-					Name = "btnAddAnswer",
+					Name = "btnAddRadioAnswer",
 					Text = "Lis‰‰ vastausvaihtoehto",
 					AutoSize = true
 				};
@@ -376,22 +389,32 @@ namespace MoodleSyntaxGenerator
 
 		private void AddRadioAnswer(object sender, EventArgs e)
 		{
-			// Get the groupbox for a dropdown question
-			var groupBox = _views[2];
-			// Start at 1, because the question is a textbox
-			int amountOfAnswers = 1;
+			// Get the groupbox for a dropdown question, _views[4] should do the same
+			var groupBox = _views[3];
+			int amountOfAnswers = 0;
 
 			var startLocation = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioQuestion").Location;
 
-			foreach (CheckBox cBox in groupBox.Controls.OfType<CheckBox>())
+			foreach (TextBox cBox in groupBox.Controls.OfType<TextBox>())
 			{
-				amountOfAnswers += 1;
+				amountOfAnswers++;
 			}
 
-			if (amountOfAnswers > 0)
+			if (amountOfAnswers > 1)
 			{
-				startLocation = groupBox.Controls.OfType<CheckBox>().Last().Location;
+				startLocation = groupBox.Controls.OfType<TextBox>().Last().Location;
 			}
+
+			TextBox textBoxAnswer = new()
+			{
+				Location = new Point(startLocation.X, startLocation.Y + 30),
+				Name = "txtBoxRadioAnswer" + (amountOfAnswers + 1)
+			};
+
+			// Move the button down
+			groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnAddRadioAnswer").Location = new Point(textBoxAnswer.Location.X, textBoxAnswer.Location.Y + 25);
+
+			groupBox.Controls.Add(textBoxAnswer);
 		}
 
 		/// <summary>

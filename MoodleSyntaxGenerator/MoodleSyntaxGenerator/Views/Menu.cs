@@ -7,11 +7,9 @@ namespace MoodleSyntaxGenerator
 		private int _selectedQuestion;
 		private Point _questionStartLocation = new Point();
 		private readonly GroupBox[] _views = new GroupBox[6];
-		private readonly SyntaxController _controller;
 
-		public Menu(SyntaxController controller)
+		public Menu()
 		{
-			_controller = controller;
 			AutoSize = true;
 			InitializeComponent();
 			InitializeSearch();
@@ -118,12 +116,12 @@ namespace MoodleSyntaxGenerator
 			// If tolerance is not given
 			if (string.IsNullOrWhiteSpace(tolerance))
 			{
-				return _controller.GenerateNumeric(question, Convert.ToDouble(answer));
+				return SyntaxController.GenerateNumeric(question, Convert.ToDouble(answer));
 			}
 
 			else
 			{
-				return _controller.GenerateNumeric(question, Convert.ToDouble(answer), Convert.ToDecimal(tolerance));
+				return SyntaxController.GenerateNumeric(question, Convert.ToDouble(answer), Convert.ToDecimal(tolerance));
 			}
 		}
 
@@ -146,7 +144,7 @@ namespace MoodleSyntaxGenerator
 				}
 			}
 
-			return _controller.GenerateDropDown(text, question, answers);
+			return SyntaxController.GenerateDropDown(text, question, answers);
 		}
 
 		private string GenerateShortAnswerSyntax(GroupBox groupBoxToSearchFrom, bool isCaseSensitive)
@@ -154,7 +152,7 @@ namespace MoodleSyntaxGenerator
 			var question = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerQuestion").Text;
 			var answer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerAnswer").Text;
 
-			return _controller.GenerateShortAnswers(question, answer, isCaseSensitive);
+			return SyntaxController.GenerateShortAnswers(question, answer, isCaseSensitive);
 		}
 
 		private string GenerateRadioSyntax(GroupBox groupBoxToSearchFrom, bool isHorizontal)
@@ -177,7 +175,7 @@ namespace MoodleSyntaxGenerator
 				}
 			}
 
-			return _controller.GenerateRadioButtons(question, answers, isHorizontal);
+			return SyntaxController.GenerateRadioButtons(question, answers, isHorizontal);
 		}
 
 

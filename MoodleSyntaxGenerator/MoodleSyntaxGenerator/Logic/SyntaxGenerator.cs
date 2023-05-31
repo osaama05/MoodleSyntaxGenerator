@@ -45,17 +45,36 @@
 		public static string GenerateSyntaxForDropdown(string text, string question, List<(string option, bool isCorrect)> options)
 		{
 			var output = "{" + $"1:{text}:" + "}" + $" {question} " + "{1:";
+			var amountOfOptions = 0;
 
 			foreach (var option in options)
 			{
-				if (option.isCorrect == true)
+				amountOfOptions++;
+
+				if (amountOfOptions == 1)
 				{
-					output = output + $"{option.option} ={option.option}";
+					if (option.isCorrect == true)
+					{
+						output = output + $"{option.option} ={option.option}";
+					}
+
+					else
+					{
+						output = output + $"{option.option}";
+					} 
 				}
 
 				else
 				{
-					output = output + $" ~ {option.option}";
+					if (option.isCorrect == true)
+					{
+						output = output + $" ~ {option.option} ={option.option}";
+					}
+
+					else
+					{
+						output = output + $" ~ {option.option}";
+					}
 				}
 			}
 			output = output + "}.";

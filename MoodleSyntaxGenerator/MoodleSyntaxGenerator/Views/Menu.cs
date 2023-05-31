@@ -270,7 +270,7 @@ namespace MoodleSyntaxGenerator
 				{
 					Location = new Point(textBoxText.Location.X, textBoxText.Location.Y + 30),
 					Name = "btnAddAnswer",
-					Text = "Lis‰‰ kysymysvaihtoehto",
+					Text = "Lis‰‰ vastausvaihtoehto",
 					AutoSize = true
 				};
 
@@ -326,7 +326,72 @@ namespace MoodleSyntaxGenerator
 
 		private void CreateRadioButtonsInputs()
 		{
+			string groupBoxName = "groupBoxRadio";
+			GroupBox? groupBoxToFind = Controls.OfType<GroupBox>().FirstOrDefault(c => c.Name == groupBoxName);
 
+			if (!Controls.Contains(groupBoxToFind))
+			{
+				var location = cmbSelect.Location;
+
+				GroupBox groupBox = new()
+				{
+					Name = groupBoxName,
+					Location = _questionStartLocation,
+					AutoSize = true
+				};
+
+				Label labelText = new()
+				{
+					Location = new Point(5, 15),
+					Name = "lblRadioQuestion",
+					Text = "Syˆt‰ kysymys"
+				};
+
+				TextBox textBoxQuestion = new()
+				{
+					Location = new Point(labelText.Location.X, labelText.Location.Y + 20),
+					Name = "txtBoxRadioQuestion"
+				};
+
+				Button btnAddAnswer = new()
+				{
+					Location = new Point(textBoxQuestion.Location.X, textBoxQuestion.Location.Y + 30),
+					Name = "btnAddAnswer",
+					Text = "Lis‰‰ vastausvaihtoehto",
+					AutoSize = true
+				};
+				btnAddAnswer.Click += AddRadioAnswer;
+
+				
+				groupBox.Controls.Add(textBoxQuestion);
+				groupBox.Controls.Add(labelText);
+				groupBox.Controls.Add(btnAddAnswer);
+
+				groupBox.Hide();
+				Controls.Add(groupBox);
+				_views[3] = groupBox;
+				_views[4] = groupBox;
+			}
+		}
+
+		private void AddRadioAnswer(object sender, EventArgs e)
+		{
+			// Get the groupbox for a dropdown question
+			var groupBox = _views[2];
+			// Start at 1, because the question is a textbox
+			int amountOfAnswers = 1;
+
+			var startLocation = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioQuestion").Location;
+
+			foreach (CheckBox cBox in groupBox.Controls.OfType<CheckBox>())
+			{
+				amountOfAnswers += 1;
+			}
+
+			if (amountOfAnswers > 0)
+			{
+				startLocation = groupBox.Controls.OfType<CheckBox>().Last().Location;
+			}
 		}
 
 		/// <summary>

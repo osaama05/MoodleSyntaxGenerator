@@ -1,5 +1,4 @@
 using MoodleSyntaxGenerator.Controllers;
-using MoodleSyntaxGenerator.Logic;
 
 namespace MoodleSyntaxGenerator
 {
@@ -14,8 +13,7 @@ namespace MoodleSyntaxGenerator
 			// To customize application configuration such as set high DPI settings or default font,
 			// see https://aka.ms/applicationconfiguration.
 			ApplicationConfiguration.Initialize();
-			SyntaxGenerator gen = new();
-			Controller controller = new(gen);
+			SyntaxController controller = new();
 			Application.Run(new Menu(controller));
 		}
 	}

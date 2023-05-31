@@ -1,5 +1,6 @@
 using MoodleSyntaxGenerator.Controllers;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace MoodleSyntaxGenerator
@@ -52,94 +53,11 @@ namespace MoodleSyntaxGenerator
 				Clipboard.SetText(txtBoxOutput.Text);
 			}
 		}
-
-		private void BtnGenerate_Click(object sender, EventArgs e)
-		{
-			string output;
-			var groupBox = _views[_selectedQuestion];
-
-			switch (_selectedQuestion)
-			{
-				case 0:
-					TextBox? shortAnswerQuestion = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerQuestion");
-					TextBox? shortAnswerAnswer = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerAnswer");
-
-					output = _controller.GenerateShortAnswers(shortAnswerQuestion.Text, shortAnswerAnswer.Text);
-					break;
-				case 1:
-					TextBox? shortAnswerQuestionCS = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerQuestion");
-					TextBox? shortAnswerAnswerCS = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerAnswer");
-
-					output = _controller.GenerateShortAnswers(shortAnswerQuestionCS.Text, shortAnswerAnswerCS.Text, true);
-					break;
-				case 2:
-					List<(string, bool)> answers = new();
-					int amountOfAnswers = 0;
-					TextBox? dropdownText = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownText");
-					TextBox? dropdownQuestion = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownQuestion");
-
-					foreach (CheckBox cBox in groupBox.Controls.OfType<CheckBox>())
-					{
-						amountOfAnswers++;
-						var isCorrect = cBox.Checked;
-						TextBox? dropdownAnswer = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownAnswer" + amountOfAnswers);
-						// Only add the answer if there is something written in the textbox
-						if (!string.IsNullOrWhiteSpace(dropdownAnswer.Text))
-						{
-							answers.Add((dropdownAnswer.Text, isCorrect));
-						}
-					}
-
-					output = _controller.GenerateDropDown(dropdownText.Text, dropdownQuestion.Text, answers);
-					break;
-				case 3:
-					List<string> radioAnswers = new();
-					int amountOfRadioAnswers = 0;
-					TextBox? radioQuestion = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioQuestion");
-
-					foreach (TextBox cBox in groupBox.Controls.OfType<TextBox>())
-					{
-						amountOfRadioAnswers++;
-						TextBox? radioAnswer = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioAnswer" + amountOfRadioAnswers);
-						// Only add the answer if there is something written in the textbox
-						if (!string.IsNullOrWhiteSpace(radioAnswer.Text))
-						{
-							radioAnswers.Add(radioAnswer.Text);
-						}
-					}
-
-					output = _controller.GenerateRadioButtons("", new List<string>());
-					break;
-				case 4:
-
-
-					output = _controller.GenerateRadioButtons("", new List<string>(), true);
-					break;
-				case 5:
-					TextBox? numericQuestion = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericQuestion");
-					TextBox? numericAnswer = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericAnswer");
-					TextBox? numericTolerance = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericTolerance");
-
-					// If tolerance is not given
-					if (string.IsNullOrWhiteSpace(numericTolerance.Text) || numericAnswer == null)
-					{
-						output = _controller.GenerateNumeric(numericQuestion.Text, Convert.ToDouble(numericAnswer.Text));
-					}
-
-					else
-					{
-						output = _controller.GenerateNumeric(numericQuestion.Text, Convert.ToDouble(numericAnswer.Text), Convert.ToDecimal(numericTolerance.Text));
-					}
-					break;
-				default:
-					output = "";
-					MessageBox.Show("Et ole valinnut vastaustyyppiä");
-					break;
-			}
-			txtBoxOutput.Text = output;
-		}
-
 		private void CmbSelect_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			ShowChosenQuestion();
+		}
+		private void ShowChosenQuestion()
 		{
 			// Hide the previous groupbox
 			if (_views[_selectedQuestion] != null)
@@ -156,6 +74,117 @@ namespace MoodleSyntaxGenerator
 				_views[_selectedQuestion].Show();
 			}
 		}
+		private void BtnGenerate_Click(object sender, EventArgs e)
+		{
+			GenerateSyntax();
+		}
+		
+		
+		private void GenerateSyntax()
+		{
+			string output;
+			var currentGroupBox = _views[_selectedQuestion];
+
+			switch (_selectedQuestion)
+			{
+				case 0:
+					output = GenerateShortAnswerSyntax(currentGroupBox, false);
+					break;
+				case 1:
+					output = GenerateShortAnswerSyntax(currentGroupBox, true);
+					break;
+				case 2:
+					output = GenerateDropdownSyntax(currentGroupBox);
+					break;
+				case 3:
+					output = GenerateRadioSyntax(currentGroupBox, false);
+					break;
+				case 4:
+					output = GenerateRadioSyntax(currentGroupBox, true);
+					break;
+				case 5:
+					output = GenerateNumericSyntax(currentGroupBox);
+					break;
+				default:
+					output = "";
+					MessageBox.Show("Et ole valinnut vastaustyyppiä");
+					break;
+			}
+			txtBoxOutput.Text = output;
+		}
+
+		private string GenerateNumericSyntax(GroupBox groupBoxToSearchFrom)
+		{
+			TextBox? numericQuestion = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericQuestion");
+			TextBox? numericAnswer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericAnswer");
+			TextBox? numericTolerance = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericTolerance");
+
+			// If tolerance is not given
+			if (string.IsNullOrWhiteSpace(numericTolerance.Text) || numericAnswer == null)
+			{
+				return _controller.GenerateNumeric(numericQuestion.Text, Convert.ToDouble(numericAnswer.Text));
+			}
+
+			else
+			{
+				return _controller.GenerateNumeric(numericQuestion.Text, Convert.ToDouble(numericAnswer.Text), Convert.ToDecimal(numericTolerance.Text));
+			}
+		}
+
+		private string GenerateDropdownSyntax(GroupBox groupBoxToSearchFrom)
+		{
+			List<(string, bool)> answers = new();
+			int amountOfAnswers = 0;
+			TextBox? dropdownText = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownText");
+			TextBox? dropdownQuestion = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownQuestion");
+
+			foreach (CheckBox cBox in groupBoxToSearchFrom.Controls.OfType<CheckBox>())
+			{
+				amountOfAnswers++;
+				bool isCorrect = cBox.Checked;
+				TextBox? dropdownAnswer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownAnswer" + amountOfAnswers);
+				// Only add the answer if there is something written in the textbox
+				if (!string.IsNullOrWhiteSpace(dropdownAnswer.Text))
+				{
+					answers.Add((dropdownAnswer.Text, isCorrect));
+				}
+			}
+
+			return _controller.GenerateDropDown(dropdownText.Text, dropdownQuestion.Text, answers);
+		}
+
+		private string GenerateShortAnswerSyntax(GroupBox groupBoxToSearchFrom, bool isCaseSensitive)
+		{
+			TextBox? shortAnswerQuestion = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerQuestion");
+			TextBox? shortAnswerAnswer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerAnswer");
+
+			return _controller.GenerateShortAnswers(shortAnswerQuestion.Text, shortAnswerAnswer.Text, isCaseSensitive);
+		}
+
+		private string GenerateRadioSyntax(GroupBox groupBoxToSearchFrom, bool isHorizontal)
+		{
+			List<string> radioAnswers = new();
+			// Start from -1, because the question is a textbox
+			int amountOfAnswers = -1;
+			TextBox? radioQuestion = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioQuestion");
+
+			foreach (TextBox cBox in groupBoxToSearchFrom.Controls.OfType<TextBox>())
+			{
+				amountOfAnswers++;
+				if (amountOfAnswers > 0)
+				{
+					TextBox? radioAnswer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioAnswer" + amountOfAnswers);
+					// Only add the answer if there is something written in the textbox
+					if (!string.IsNullOrWhiteSpace(radioAnswer.Text))
+					{
+						radioAnswers.Add(radioAnswer.Text);
+					} 
+				}
+			}
+
+			return _controller.GenerateRadioButtons(radioQuestion.Text, radioAnswers, isHorizontal);
+		}
+
 
 		/// <summary>
 		/// Creates the input fields for a numeric question
@@ -234,6 +263,9 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
+		/// <summary>
+		/// Creates the input fields for a dropdown question
+		/// </summary>
 		private void CreateDropdownInputs()
 		{
 			string groupBoxName = "groupBoxDropdown";
@@ -300,6 +332,9 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
+		/// <summary>
+		/// Adds an answer to a dropdown question
+		/// </summary>
 		private void AddAnswerChoice(object sender, EventArgs e)
 		{
 			// Get the groupbox for a dropdown question
@@ -337,6 +372,9 @@ namespace MoodleSyntaxGenerator
 			groupBox.Controls.Add(checkBoxIsCorrect);
 		}
 
+		/// <summary>
+		/// Creates the input fields for a row of radio buttond
+		/// </summary>
 		private void CreateRadioButtonsInputs()
 		{
 			string groupBoxName = "groupBoxRadio";
@@ -387,11 +425,15 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
+		/// <summary>
+		/// Adds an answer choice to the row of radio buttons
+		/// </summary>
 		private void AddRadioAnswer(object sender, EventArgs e)
 		{
 			// Get the groupbox for a dropdown question, _views[4] should do the same
 			var groupBox = _views[3];
-			int amountOfAnswers = 0;
+			// Start from -1, because the question is a textbox
+			int amountOfAnswers = -1;
 
 			var startLocation = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioQuestion").Location;
 

@@ -7,6 +7,7 @@ namespace MoodleSyntaxGenerator
 	public partial class Menu : Form
 	{
 		private int _selectedQuestion;
+		private Point _questionStartLocation = new Point();
 		private readonly GroupBox[] _views = new GroupBox[6];
 		private readonly Controller _controller;
 
@@ -22,6 +23,8 @@ namespace MoodleSyntaxGenerator
 			CreateDropdownInputs();
 			CreateRadioButtonsInputs();
 			CreateNumericInputs();
+
+			_views[_selectedQuestion].Show();
 		}
 
 		private void InitializeSearch()
@@ -37,8 +40,9 @@ namespace MoodleSyntaxGenerator
 			};
 
 			cmbSelect.DropDownStyle = ComboBoxStyle.DropDownList;
-
 			cmbSelect.DataSource = searchOptions;
+
+			_questionStartLocation = new Point(cmbSelect.Location.X, cmbSelect.Location.Y + 40);
 		}
 
 		private void BtnCopy_Click(object sender, EventArgs e)
@@ -69,9 +73,24 @@ namespace MoodleSyntaxGenerator
 					output = _controller.GenerateShortAnswers(shortAnswerQuestionCS.Text, shortAnswerAnswerCS.Text, true);
 					break;
 				case 2:
+					List<(string, bool)> answers = new();
+					int amountOfAnswers = 0;
+					TextBox? dropdownText = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownText");
+					TextBox? dropdownQuestion = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownQuestion");
 
+					foreach (CheckBox cBox in groupBox.Controls.OfType<CheckBox>())
+					{
+						amountOfAnswers++;
+						var isCorrect = cBox.Checked;
+						TextBox? dropdownAnswer = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownAnswer" + amountOfAnswers);
+						// Only add the answer if there is something written in the textbox
+						if (!string.IsNullOrWhiteSpace(dropdownAnswer.Text))
+						{
+							answers.Add((dropdownAnswer.Text, isCorrect));
+						}
+					}
 
-					output = _controller.GenerateDropDown("", "", new List<(string, bool)>());
+					output = _controller.GenerateDropDown(dropdownText.Text, dropdownQuestion.Text, answers);
 					break;
 				case 3:
 
@@ -140,7 +159,7 @@ namespace MoodleSyntaxGenerator
 				GroupBox groupBox = new()
 				{
 					Name = groupBoxName,
-					Location = new Point(location.X, location.Y + 30),
+					Location = _questionStartLocation,
 					AutoSize = true
 				};
 
@@ -202,7 +221,6 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
-
 		private void CreateDropdownInputs()
 		{
 			string groupBoxName = "groupBoxDropdown";
@@ -215,7 +233,7 @@ namespace MoodleSyntaxGenerator
 				GroupBox groupBox = new()
 				{
 					Name = groupBoxName,
-					Location = new Point(location.X, location.Y + 30),
+					Location = _questionStartLocation,
 					AutoSize = true
 				};
 
@@ -250,7 +268,7 @@ namespace MoodleSyntaxGenerator
 
 				Button btnAddAnswer = new()
 				{
-					Location = new Point(textBoxText.Location.X, textBoxText.Location.Y + 60),
+					Location = new Point(textBoxText.Location.X, textBoxText.Location.Y + 30),
 					Name = "btnAddAnswer",
 					Text = "Lis‰‰ kysymysvaihtoehto",
 					AutoSize = true
@@ -276,7 +294,7 @@ namespace MoodleSyntaxGenerator
 			int amountOfAnswers = 0;
 
 			var startLocation = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownText").Location;
-			
+
 			foreach (CheckBox cBox in groupBox.Controls.OfType<CheckBox>())
 			{
 				amountOfAnswers += 1;
@@ -286,23 +304,23 @@ namespace MoodleSyntaxGenerator
 			{
 				startLocation = groupBox.Controls.OfType<CheckBox>().Last().Location;
 			}
-			
+
 			CheckBox checkBoxIsCorrect = new()
 			{
-				Location = new Point(startLocation.X, startLocation.Y + 20),
-				Name = "checkBoxIsCorrect" + (amountOfAnswers + 1),
-				Text = "Oikea vastaus"
+				Location = new Point(startLocation.X, startLocation.Y + 30),
+				Name = "checkBoxIsCorrect" + (amountOfAnswers + 1)
 			};
 
 			TextBox textBoxAnswer = new()
 			{
-				Location = new Point(checkBoxIsCorrect.Location.X + 5, checkBoxIsCorrect.Location.Y),
-				Name = "txtBoxDropdownAnswer"
+				Location = new Point(checkBoxIsCorrect.Location.X + 15, checkBoxIsCorrect.Location.Y),
+				Name = "txtBoxDropdownAnswer" + (amountOfAnswers + 1)
 			};
 
 			// Move the button down
-			groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnAddAnswer").Location = new Point(checkBoxIsCorrect.Location.X, checkBoxIsCorrect.Location.Y + 20);
+			groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnAddAnswer").Location = new Point(checkBoxIsCorrect.Location.X, checkBoxIsCorrect.Location.Y + 25);
 
+			groupBox.Controls.Add(textBoxAnswer);
 			groupBox.Controls.Add(checkBoxIsCorrect);
 		}
 
@@ -326,7 +344,7 @@ namespace MoodleSyntaxGenerator
 				GroupBox groupBox = new()
 				{
 					Name = groupBoxName,
-					Location = new Point(location.X, location.Y + 30),
+					Location = _questionStartLocation,
 					AutoSize = true
 				};
 
@@ -370,11 +388,6 @@ namespace MoodleSyntaxGenerator
 				_views[0] = groupBox;
 				_views[1] = groupBox;
 			}
-		}
-
-		private void ClearAllInputs(object sender, EventArgs e)
-		{
-
 		}
 	}
 }

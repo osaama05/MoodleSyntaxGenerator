@@ -60,7 +60,7 @@
 			// btnGenerate
 			// 
 			btnGenerate.BackColor = SystemColors.ControlLightLight;
-			btnGenerate.Location = new Point(12, 303);
+			btnGenerate.Location = new Point(348, 67);
 			btnGenerate.Name = "btnGenerate";
 			btnGenerate.Size = new Size(75, 23);
 			btnGenerate.TabIndex = 2;
@@ -70,7 +70,7 @@
 			// 
 			// txtBoxOutput
 			// 
-			txtBoxOutput.Location = new Point(12, 359);
+			txtBoxOutput.Location = new Point(348, 38);
 			txtBoxOutput.Multiline = true;
 			txtBoxOutput.Name = "txtBoxOutput";
 			txtBoxOutput.ReadOnly = true;
@@ -80,7 +80,7 @@
 			// lblOutput
 			// 
 			lblOutput.AutoSize = true;
-			lblOutput.Location = new Point(12, 341);
+			lblOutput.Location = new Point(348, 20);
 			lblOutput.Name = "lblOutput";
 			lblOutput.Size = new Size(51, 15);
 			lblOutput.TabIndex = 4;
@@ -88,7 +88,7 @@
 			// 
 			// btnCopy
 			// 
-			btnCopy.Location = new Point(394, 359);
+			btnCopy.Location = new Point(730, 38);
 			btnCopy.Name = "btnCopy";
 			btnCopy.Size = new Size(57, 23);
 			btnCopy.TabIndex = 5;

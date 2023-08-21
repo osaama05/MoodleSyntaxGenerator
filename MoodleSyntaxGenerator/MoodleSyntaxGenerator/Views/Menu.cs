@@ -215,7 +215,7 @@ namespace MoodleSyntaxGenerator
 
 				TextBox textBoxQuestion = new()
 				{
-					Location = new Point(labelQuestion.Location.X, labelQuestion.Location.Y + 20),
+					Location = new Point(labelQuestion.Location.X, labelQuestion.Location.Y + _lineSpacing),
 					Name = "txtBoxNumericQuestion",
 					Multiline = true
 				};
@@ -230,7 +230,7 @@ namespace MoodleSyntaxGenerator
 
 				TextBox textBoxAnswer = new()
 				{
-					Location = new Point(labelAnswer.Location.X, labelAnswer.Location.Y + 20),
+					Location = new Point(labelAnswer.Location.X, labelAnswer.Location.Y + _lineSpacing),
 					Name = "txtBoxNumericAnswer",
 					Multiline = true
 				};
@@ -245,7 +245,7 @@ namespace MoodleSyntaxGenerator
 
 				TextBox textBoxTolerance = new()
 				{
-					Location = new Point(labelTolerance.Location.X, labelTolerance.Location.Y + 20),
+					Location = new Point(labelTolerance.Location.X, labelTolerance.Location.Y + _lineSpacing),
 					Name = "txtBoxNumericTolerance",
 					Multiline = true
 				};
@@ -445,7 +445,7 @@ namespace MoodleSyntaxGenerator
 
 				TextBox textBoxQuestion = new()
 				{
-					Location = new Point(labelText.Location.X, labelText.Location.Y + 20),
+					Location = new Point(labelText.Location.X, labelText.Location.Y + _lineSpacing),
 					Name = "txtBoxRadioQuestion"
 				};
 
@@ -569,7 +569,7 @@ namespace MoodleSyntaxGenerator
 
 				TextBox textBoxQuestion = new()
 				{
-					Location = new Point(labelQuestion.Location.X, labelQuestion.Location.Y + 20),
+					Location = new Point(labelQuestion.Location.X, labelQuestion.Location.Y + _lineSpacing),
 					Name = "txtBoxShortAnswerQuestion",
 					Multiline = true
 				};
@@ -584,7 +584,7 @@ namespace MoodleSyntaxGenerator
 
 				TextBox textBoxAnswer = new()
 				{
-					Location = new Point(labelAnswer.Location.X, labelAnswer.Location.Y + 20),
+					Location = new Point(labelAnswer.Location.X, labelAnswer.Location.Y + _lineSpacing),
 					Name = "txtBoxShortAnswerAnswer",
 					Multiline = true
 				};

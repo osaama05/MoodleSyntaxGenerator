@@ -28,21 +28,22 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			components = new System.ComponentModel.Container();
 			cmbSelect = new ComboBox();
 			lblSelect = new Label();
 			btnGenerate = new Button();
 			txtBoxOutput = new TextBox();
 			lblOutput = new Label();
 			btnCopy = new Button();
-			errorProvider1 = new ErrorProvider(components);
-			((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+			menuStrip1 = new MenuStrip();
+			toolStripMenuItem1 = new ToolStripMenuItem();
+			toolStripTextBox1 = new ToolStripTextBox();
+			menuStrip1.SuspendLayout();
 			SuspendLayout();
 			// 
 			// cmbSelect
 			// 
 			cmbSelect.FormattingEnabled = true;
-			cmbSelect.Location = new Point(12, 38);
+			cmbSelect.Location = new Point(12, 57);
 			cmbSelect.Name = "cmbSelect";
 			cmbSelect.Size = new Size(265, 23);
 			cmbSelect.TabIndex = 0;
@@ -51,7 +52,7 @@
 			// lblSelect
 			// 
 			lblSelect.AutoSize = true;
-			lblSelect.Location = new Point(12, 20);
+			lblSelect.Location = new Point(12, 39);
 			lblSelect.Name = "lblSelect";
 			lblSelect.Size = new Size(124, 15);
 			lblSelect.TabIndex = 1;
@@ -60,7 +61,7 @@
 			// btnGenerate
 			// 
 			btnGenerate.BackColor = SystemColors.ControlLightLight;
-			btnGenerate.Location = new Point(348, 67);
+			btnGenerate.Location = new Point(348, 86);
 			btnGenerate.Name = "btnGenerate";
 			btnGenerate.Size = new Size(75, 23);
 			btnGenerate.TabIndex = 2;
@@ -70,7 +71,7 @@
 			// 
 			// txtBoxOutput
 			// 
-			txtBoxOutput.Location = new Point(348, 38);
+			txtBoxOutput.Location = new Point(348, 57);
 			txtBoxOutput.Multiline = true;
 			txtBoxOutput.Name = "txtBoxOutput";
 			txtBoxOutput.ReadOnly = true;
@@ -80,7 +81,7 @@
 			// lblOutput
 			// 
 			lblOutput.AutoSize = true;
-			lblOutput.Location = new Point(348, 20);
+			lblOutput.Location = new Point(348, 39);
 			lblOutput.Name = "lblOutput";
 			lblOutput.Size = new Size(51, 15);
 			lblOutput.TabIndex = 4;
@@ -88,17 +89,34 @@
 			// 
 			// btnCopy
 			// 
-			btnCopy.Location = new Point(730, 38);
+			btnCopy.Location = new Point(730, 57);
 			btnCopy.Name = "btnCopy";
 			btnCopy.Size = new Size(57, 23);
 			btnCopy.TabIndex = 5;
-			btnCopy.Text = "Copy";
+			btnCopy.Text = "Kopioi";
 			btnCopy.UseVisualStyleBackColor = true;
 			btnCopy.Click += BtnCopy_Click;
 			// 
-			// errorProvider1
+			// menuStrip1
 			// 
-			errorProvider1.ContainerControl = this;
+			menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1 });
+			menuStrip1.Location = new Point(0, 0);
+			menuStrip1.Name = "menuStrip1";
+			menuStrip1.Size = new Size(800, 24);
+			menuStrip1.TabIndex = 6;
+			menuStrip1.Text = "menuStrip1";
+			// 
+			// toolStripMenuItem1
+			// 
+			toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { toolStripTextBox1 });
+			toolStripMenuItem1.Name = "toolStripMenuItem1";
+			toolStripMenuItem1.Size = new Size(40, 20);
+			toolStripMenuItem1.Text = "Info";
+			// 
+			// toolStripTextBox1
+			// 
+			toolStripTextBox1.Name = "toolStripTextBox1";
+			toolStripTextBox1.Size = new Size(100, 23);
 			// 
 			// Menu
 			// 
@@ -106,15 +124,18 @@
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = Color.FromArgb(212, 207, 201);
 			ClientSize = new Size(800, 450);
+			FormClosing += Menu_FormClosing;
 			Controls.Add(btnCopy);
 			Controls.Add(lblOutput);
 			Controls.Add(txtBoxOutput);
 			Controls.Add(btnGenerate);
 			Controls.Add(lblSelect);
 			Controls.Add(cmbSelect);
+			Controls.Add(menuStrip1);
 			Name = "Menu";
 			Text = "Main Menu";
-			((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+			menuStrip1.ResumeLayout(false);
+			menuStrip1.PerformLayout();
 			ResumeLayout(false);
 			PerformLayout();
 		}
@@ -127,6 +148,8 @@
 		private TextBox txtBoxOutput;
 		private Label lblOutput;
 		private Button btnCopy;
-		private ErrorProvider errorProvider1;
+		private MenuStrip menuStrip1;
+		private ToolStripMenuItem toolStripMenuItem1;
+		private ToolStripTextBox toolStripTextBox1;
 	}
 }

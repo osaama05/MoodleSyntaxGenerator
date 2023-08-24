@@ -74,8 +74,8 @@ namespace MoodleSyntaxGenerator
 		{
 			GenerateSyntax();
 		}
-		
-		
+
+
 		private void GenerateSyntax()
 		{
 			string moodleSyntax;
@@ -289,8 +289,8 @@ namespace MoodleSyntaxGenerator
 				_views[5] = groupBox;
 			}
 		}
-		
-		
+
+
 		/// <summary>
 		/// Creates the input fields for a multiple choice question
 		/// </summary>
@@ -364,7 +364,7 @@ namespace MoodleSyntaxGenerator
 				};
 				btnDeleteAnswer.Click += DeleteMultipleChoiceAnswer;
 
-				
+
 				groupBox.Controls.Add(textBoxText);
 				groupBox.Controls.Add(labelText);
 				groupBox.Controls.Add(textBoxQuestion);
@@ -440,7 +440,7 @@ namespace MoodleSyntaxGenerator
 			{
 				groupBox.Controls.Remove(textBoxes[textBoxes.Count - 1]);
 				groupBox.Controls.Remove(checkBoxes[checkBoxes.Count - 1]);
-				
+
 
 				var btnAdd = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnAddMultipleChoiceAnswer");
 				var btnDelete = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnDeleteMultipleChoiceAnswer");
@@ -450,7 +450,7 @@ namespace MoodleSyntaxGenerator
 				btnDelete.Location = new Point(btnDelete.Location.X, btnDelete.Location.Y - _lineSpacing);
 			}
 		}
-		
+
 
 		/// <summary>
 		/// Creates the input fields for a row of radio buttond
@@ -559,7 +559,7 @@ namespace MoodleSyntaxGenerator
 
 			groupBox.Controls.Add(textBoxAnswer);
 		}
-		
+
 		/// <summary>
 		/// Delete the latest answer choice from the radio buttons
 		/// </summary>
@@ -582,7 +582,7 @@ namespace MoodleSyntaxGenerator
 				btnDelete.Location = new Point(btnDelete.Location.X, btnDelete.Location.Y - _lineSpacing);
 			}
 		}
-		
+
 
 		/// <summary>
 		/// Creates the input fields for a short answer question
@@ -642,6 +642,27 @@ namespace MoodleSyntaxGenerator
 				Controls.Add(groupBox);
 				_views[0] = groupBox;
 				_views[1] = groupBox;
+			}
+		}
+
+
+		private void Menu_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
+				// Display a confirmation dialog when the user tries to close the form.
+				DialogResult result = MessageBox.Show("Haluatko varmasti sulkea sovelluksen?", "Vahvistus", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+				if (result == DialogResult.No)
+				{
+					// If the user selects 'No', cancel the form closing event.
+					e.Cancel = true;
+				}
+				else
+				{
+					// If the user selects 'Yes', close the application.
+					Application.Exit();
+				}
 			}
 		}
 	}

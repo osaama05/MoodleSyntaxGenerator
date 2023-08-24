@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MoodleSyntaxGenerator.Logic
+﻿namespace MoodleSyntaxGenerator.Logic
 {
 	public class SyntaxGenerator
 	{
@@ -13,7 +7,7 @@ namespace MoodleSyntaxGenerator.Logic
 			
 		}
 
-		public string GenerateShortAnswer(string question, string answer, bool isCaseSensitive = false)
+		public static string GenerateSyntaxForShortAnswer(string question, string answer, bool isCaseSensitive = false)
 		{
 			if (isCaseSensitive == true)
 			{
@@ -26,7 +20,7 @@ namespace MoodleSyntaxGenerator.Logic
 			}
 		}
 
-		public string GenerateRadioButtons(string question, List<string> options, bool isHorizontal = false)
+		public static string GenerateyntaxForRadioButtons(string question, List<string> options, bool isHorizontal = false)
 		{
 			string output;
 
@@ -48,20 +42,39 @@ namespace MoodleSyntaxGenerator.Logic
 			return output;
 		}
 
-		public string GenerateDropdown(string text, string question, List<(string option, bool isCorrect)> options)
+		public static string GenerateSyntaxForMultipleChoice(string text, string question, List<(string option, bool isCorrect)> options)
 		{
 			var output = "{" + $"1:{text}:" + "}" + $" {question} " + "{1:";
+			var amountOfOptions = 0;
 
 			foreach (var option in options)
 			{
-				if (option.isCorrect == true)
+				amountOfOptions++;
+
+				if (amountOfOptions == 1)
 				{
-					output = output + $"{option.option} ={option.option}";
+					if (option.isCorrect == true)
+					{
+						output = output + $"{option.option} ={option.option}";
+					}
+
+					else
+					{
+						output = output + $"{option.option}";
+					} 
 				}
 
 				else
 				{
-					output = output + $" ~ {option.option}";
+					if (option.isCorrect == true)
+					{
+						output = output + $" ~ {option.option} ={option.option}";
+					}
+
+					else
+					{
+						output = output + $" ~ {option.option}";
+					}
 				}
 			}
 			output = output + "}.";
@@ -69,7 +82,7 @@ namespace MoodleSyntaxGenerator.Logic
 			return output;
 		}
 
-		public string GenerateNumeric(string question, double answer, decimal tolerance = 0)
+		public static string GenerateSyntaxForNumeric(string question, decimal answer, decimal tolerance = 0)
 		{
 			return "{" + $"1:{question}: ={answer}:{tolerance}" + "}";
 		}

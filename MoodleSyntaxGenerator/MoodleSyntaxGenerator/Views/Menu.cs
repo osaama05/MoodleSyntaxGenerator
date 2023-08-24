@@ -74,8 +74,30 @@ namespace MoodleSyntaxGenerator
 		{
 			GenerateSyntax();
 		}
+		private void Menu_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
+				// Display a confirmation dialog when the user tries to close the form.
+				DialogResult result = MessageBox.Show("Haluatko varmasti sulkea sovelluksen?", "Vahvistus", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+				if (result == DialogResult.No)
+				{
+					// If the user selects 'No', cancel the form closing event.
+					e.Cancel = true;
+				}
+				else
+				{
+					// If the user selects 'Yes', close the application.
+					Application.Exit();
+				}
+			}
+		}
 
 
+		/// <summary>
+		/// Calls the correct method based on the chosen question type
+		/// </summary>
 		private void GenerateSyntax()
 		{
 			string moodleSyntax;
@@ -109,6 +131,11 @@ namespace MoodleSyntaxGenerator
 			txtBoxOutput.Text = moodleSyntax;
 		}
 
+		/// <summary>
+		/// Generates the syntax for a numeric question based on the inputs
+		/// </summary>
+		/// <param name="groupBoxToSearchFrom"></param>
+		/// <returns></returns>
 		private static string GenerateNumericSyntax(GroupBox groupBoxToSearchFrom)
 		{
 			groupBoxToSearchFrom.AutoSize = true;
@@ -129,6 +156,11 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
+		/// <summary>
+		/// Generates the syntax for a multiple choice question based on the inputs
+		/// </summary>
+		/// <param name="groupBoxToSearchFrom"></param>
+		/// <returns></returns>
 		private static string GenerateMultipleChoiceSyntax(GroupBox groupBoxToSearchFrom)
 		{
 			List<(TextBox answer, CheckBox isCorrect)> answers = new();
@@ -160,6 +192,12 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
+		/// <summary>
+		/// Generates the syntax for a short answer question based on the inputs
+		/// </summary>
+		/// <param name="groupBoxToSearchFrom"></param>
+		/// <param name="isCaseSensitive"></param>
+		/// <returns></returns>
 		private string GenerateShortAnswerSyntax(GroupBox groupBoxToSearchFrom, bool isCaseSensitive)
 		{
 			groupBoxToSearchFrom.AutoSize = true;
@@ -179,6 +217,12 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
+		/// <summary>
+		/// Generates the syntax for a radio question based on the inputs
+		/// </summary>
+		/// <param name="groupBoxToSearchFrom"></param>
+		/// <param name="isHorizontal"></param>
+		/// <returns></returns>
 		private string GenerateRadioSyntax(GroupBox groupBoxToSearchFrom, bool isHorizontal)
 		{
 			List<TextBox> answers = new();
@@ -212,7 +256,7 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
-
+		// Numeric
 		/// <summary>
 		/// Creates the input fields for a numeric question
 		/// </summary>
@@ -290,7 +334,7 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
-
+		// Multiple choice
 		/// <summary>
 		/// Creates the input fields for a multiple choice question
 		/// </summary>
@@ -395,7 +439,7 @@ namespace MoodleSyntaxGenerator
 				amountOfAnswers += 1;
 			}
 
-			if (amountOfAnswers > 0)
+			if (amountOfAnswers > 0 && amountOfAnswers <= 10)
 			{
 				startLocation = groupBox.Controls.OfType<CheckBox>().Last().Location;
 			}
@@ -451,7 +495,7 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
-
+		// Radio button
 		/// <summary>
 		/// Creates the input fields for a row of radio buttond
 		/// </summary>
@@ -539,7 +583,7 @@ namespace MoodleSyntaxGenerator
 				amountOfAnswers++;
 			}
 
-			if (amountOfAnswers > 1)
+			if (amountOfAnswers > 1 && amountOfAnswers <= 11)
 			{
 				startLocation = groupBox.Controls.OfType<TextBox>().Last().Location;
 			}
@@ -583,7 +627,7 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
-
+		// Short answer
 		/// <summary>
 		/// Creates the input fields for a short answer question
 		/// </summary>
@@ -642,27 +686,6 @@ namespace MoodleSyntaxGenerator
 				Controls.Add(groupBox);
 				_views[0] = groupBox;
 				_views[1] = groupBox;
-			}
-		}
-
-
-		private void Menu_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			if (e.CloseReason == CloseReason.UserClosing)
-			{
-				// Display a confirmation dialog when the user tries to close the form.
-				DialogResult result = MessageBox.Show("Haluatko varmasti sulkea sovelluksen?", "Vahvistus", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-				if (result == DialogResult.No)
-				{
-					// If the user selects 'No', cancel the form closing event.
-					e.Cancel = true;
-				}
-				else
-				{
-					// If the user selects 'Yes', close the application.
-					Application.Exit();
-				}
 			}
 		}
 	}

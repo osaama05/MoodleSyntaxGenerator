@@ -11,7 +11,6 @@ namespace MoodleSyntaxGenerator.Controllers
 
 		public static string GenerateNumeric(TextBox question, TextBox answer, TextBox tolerance)
 		{
-			decimal defaultValue = 0;
 			var questionText = question.Text;
 			var answerText = answer.Text;
 			var toleranceText = tolerance.Text;
@@ -25,7 +24,7 @@ namespace MoodleSyntaxGenerator.Controllers
 			// If tolerance is not given
 			if (string.IsNullOrWhiteSpace(toleranceText))
 			{
-				if (decimal.TryParse(answerText, out defaultValue))
+				if (decimal.TryParse(answerText, out _))
 				{
 					return SyntaxGenerator.GenerateSyntaxForNumeric(questionText, Convert.ToDecimal(answerText));
 				}
@@ -42,14 +41,15 @@ namespace MoodleSyntaxGenerator.Controllers
 				throw new Exception("Vastauskenttä on tyhjä");
 			}
 
+			
 			// If Answer is not decimal
-			if (!decimal.TryParse(answerText, out defaultValue))
+			if (!decimal.TryParse(answerText, out _))
 			{
 				throw new Exception("Vastauskenttä ei ole numeroina");
 			}
 
 			// If tolerance is not decimal
-			if (!decimal.TryParse(toleranceText, out defaultValue))
+			if (!decimal.TryParse(toleranceText, out _))
 			{
 				throw new Exception("Toleranssi ei ole numeroina");
 			}

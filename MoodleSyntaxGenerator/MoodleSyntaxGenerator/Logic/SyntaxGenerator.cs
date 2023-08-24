@@ -42,7 +42,7 @@
 			return output;
 		}
 
-		public static string GenerateSyntaxForDropdown(string text, string question, List<(string option, bool isCorrect)> options)
+		public static string GenerateSyntaxForMultipleChoice(string text, string question, List<(string option, bool isCorrect)> options)
 		{
 			var output = "{" + $"1:{text}:" + "}" + $" {question} " + "{1:";
 			var amountOfOptions = 0;
@@ -82,7 +82,7 @@
 			return output;
 		}
 
-		public static string GenerateSyntaxForNumeric(string question, double answer, decimal tolerance = 0)
+		public static string GenerateSyntaxForNumeric(string question, decimal answer, decimal tolerance = 0)
 		{
 			return "{" + $"1:{question}: ={answer}:{tolerance}" + "}";
 		}

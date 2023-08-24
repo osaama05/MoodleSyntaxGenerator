@@ -1,4 +1,5 @@
 using MoodleSyntaxGenerator.Controllers;
+using System.Diagnostics.Eventing.Reader;
 
 namespace MoodleSyntaxGenerator
 {
@@ -16,7 +17,7 @@ namespace MoodleSyntaxGenerator
 			InitializeSearch();
 
 			CreateShortAnswerInputs();
-			CreateDropdownInputs();
+			CreateMultipleChoiceInputs();
 			CreateRadioButtonInputs();
 			CreateNumericInputs();
 
@@ -27,12 +28,12 @@ namespace MoodleSyntaxGenerator
 		{
 			List<string> searchOptions = new()
 			{
-				"Short Answer",
-				"Short Answer (Case sensitive)",
-				"Dropdown menu in-line in the text",
-				"Vertical column of radio buttons",
-				"Horizontal row of radio-buttons",
-				"Numerical"
+				"Lyhyt vastaus",
+				"Lyhyt vastaus (merkkikokoriippuvainen)",
+				"Monivalinta",
+				"Valintanappi (pysty)",
+				"Valintanappi (vaaka)",
+				"Numeerinen"
 			};
 
 			cmbSelect.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -89,7 +90,7 @@ namespace MoodleSyntaxGenerator
 					moodleSyntax = GenerateShortAnswerSyntax(currentGroupBox, true);
 					break;
 				case 2:
-					moodleSyntax = GenerateDropdownSyntax(currentGroupBox);
+					moodleSyntax = GenerateMultipleChoiceSyntax(currentGroupBox);
 					break;
 				case 3:
 					moodleSyntax = GenerateRadioSyntax(currentGroupBox, false);
@@ -108,81 +109,107 @@ namespace MoodleSyntaxGenerator
 			txtBoxOutput.Text = moodleSyntax;
 		}
 
-		private string GenerateNumericSyntax(GroupBox groupBoxToSearchFrom)
+		private static string GenerateNumericSyntax(GroupBox groupBoxToSearchFrom)
 		{
 			groupBoxToSearchFrom.AutoSize = true;
 
-			var question = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericQuestion").Text;
-			var answer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericAnswer").Text;
-			var tolerance = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericTolerance").Text;
+			var question = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericQuestion");
+			var answer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericAnswer");
+			var tolerance = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxNumericTolerance");
 
-			// If tolerance is not given
-			if (string.IsNullOrWhiteSpace(tolerance))
+			try
 			{
-				return SyntaxController.GenerateNumeric(question, Convert.ToDouble(answer));
+				return SyntaxController.GenerateNumeric(question, answer, tolerance);
 			}
 
-			else
+			catch (Exception e)
 			{
-				return SyntaxController.GenerateNumeric(question, Convert.ToDouble(answer), Convert.ToDecimal(tolerance));
+				MessageBox.Show(e.Message);
+				return "";
 			}
 		}
 
-		private string GenerateDropdownSyntax(GroupBox groupBoxToSearchFrom)
+		private static string GenerateMultipleChoiceSyntax(GroupBox groupBoxToSearchFrom)
 		{
-			List<(string, bool)> answers = new();
+			List<(TextBox answer, CheckBox isCorrect)> answers = new();
 			groupBoxToSearchFrom.AutoSize = true;
 			int amountOfAnswers = 0;
-			var text = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownText").Text;
-			var question = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownQuestion").Text;
+			var text = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxMultipleChoiceText");
+			var question = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxMultipleChoiceQuestion");
 
 			foreach (CheckBox cBox in groupBoxToSearchFrom.Controls.OfType<CheckBox>())
 			{
 				amountOfAnswers++;
-				bool isCorrect = cBox.Checked;
-				var answer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownAnswer" + amountOfAnswers).Text;
+				var answer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxMultipleChoiceAnswer" + amountOfAnswers);
 				// Only add the answer if there is something written in the textbox
-				if (!string.IsNullOrWhiteSpace(answer))
+				if (!string.IsNullOrWhiteSpace(answer.Text))
 				{
-					answers.Add((answer, isCorrect));
+					answers.Add((answer, cBox));
 				}
 			}
 
-			return SyntaxController.GenerateDropDown(text, question, answers);
+			try
+			{
+				return SyntaxController.GenerateMultipleChoiceDown(text, question, answers);
+			}
+
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+				return "";
+			}
 		}
 
 		private string GenerateShortAnswerSyntax(GroupBox groupBoxToSearchFrom, bool isCaseSensitive)
 		{
 			groupBoxToSearchFrom.AutoSize = true;
 
-			var question = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerQuestion").Text;
-			var answer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerAnswer").Text;
+			var question = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerQuestion");
+			var answer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxShortAnswerAnswer");
 
-			return SyntaxController.GenerateShortAnswers(question, answer, isCaseSensitive);
+			try
+			{
+				return SyntaxController.GenerateShortAnswers(question, answer, isCaseSensitive);
+			}
+
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+				return "";
+			}
 		}
 
 		private string GenerateRadioSyntax(GroupBox groupBoxToSearchFrom, bool isHorizontal)
 		{
-			List<string> answers = new();
+			List<TextBox> answers = new();
 			groupBoxToSearchFrom.AutoSize = true;
-			int amountOfAnswers = -1; // Start from -1, because the question is a textbox
-			var question = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioQuestion").Text;
+			int amountOfAnswers = 0; // Start from 0, because the question is a textbox
+			var question = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioQuestion");
 
 			foreach (TextBox cBox in groupBoxToSearchFrom.Controls.OfType<TextBox>())
 			{
 				amountOfAnswers++;
-				if (amountOfAnswers > 0)
+				if (amountOfAnswers > 1)
 				{
-					var answer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioAnswer" + amountOfAnswers).Text;
+					var answer = groupBoxToSearchFrom.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioAnswer" + amountOfAnswers);
 					// Only add the answer if there is something written in the textbox
-					if (!string.IsNullOrWhiteSpace(answer))
+					if (!string.IsNullOrWhiteSpace(answer.Text))
 					{
 						answers.Add(answer);
 					}
 				}
 			}
 
-			return SyntaxController.GenerateRadioButtons(question, answers, isHorizontal);
+			try
+			{
+				return SyntaxController.GenerateRadioButtons(question, answers, isHorizontal);
+			}
+
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+				return "";
+			}
 		}
 
 
@@ -263,13 +290,13 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 		
-
+		
 		/// <summary>
-		/// Creates the input fields for a dropdown question
+		/// Creates the input fields for a multiple choice question
 		/// </summary>
-		private void CreateDropdownInputs()
+		private void CreateMultipleChoiceInputs()
 		{
-			string groupBoxName = "groupBoxDropdown";
+			string groupBoxName = "groupBoxMultipleChoice";
 			GroupBox? groupBoxToFind = Controls.OfType<GroupBox>().FirstOrDefault(c => c.Name == groupBoxName);
 
 			if (!Controls.Contains(groupBoxToFind))
@@ -286,55 +313,63 @@ namespace MoodleSyntaxGenerator
 				Label labelText = new()
 				{
 					Location = new Point(5, 15),
-					Name = "lblDropdownText",
+					Name = "lblMultipleChoiceText",
 					Text = "Syötä teksti"
 				};
 
 				TextBox textBoxText = new()
 				{
 					Location = new Point(labelText.Location.X, labelText.Location.Y + _lineSpacing),
-					Name = "txtBoxDropdownText",
+					Name = "txtBoxMultipleChoiceText",
 					Multiline = true
 				};
 
 				Label labelQuestion = new()
 				{
 					Location = new Point(labelText.Location.X + textBoxText.Width + 5, labelText.Location.Y),
-					Name = "lblDropdownQuestion",
+					Name = "lblMultipleChoiceQuestion",
 					Text = "Syötä kysymys"
 				};
 
 				TextBox textBoxQuestion = new()
 				{
 					Location = new Point(labelQuestion.Location.X, labelQuestion.Location.Y + _lineSpacing),
-					Name = "txtBoxDropdownQuestion",
+					Name = "txtBoxMultipleChoiceQuestion",
 					Multiline = true
 				};
 
+				Label labelAnswer = new()
+				{
+					Location = new Point(textBoxText.Location.X, textBoxText.Location.Y + _lineSpacing),
+					Name = "lblMultipleChoiceAnswer",
+					Text = "Vastausvaihtoehdot",
+					AutoSize = true
+				};
 
 				Button btnAddAnswer = new()
 				{
-					Location = new Point(textBoxText.Location.X, textBoxText.Location.Y + _lineSpacing),
-					Name = "btnAddDropdownAnswer",
+					Location = new Point(labelAnswer.Location.X, labelAnswer.Location.Y + _lineSpacing),
+					Name = "btnAddMultipleChoiceAnswer",
 					Text = "Lisää vastaus",
 					AutoSize = true
 				};
-				btnAddAnswer.Click += AddDropdownAnswer;
+				btnAddAnswer.Click += AddMultipleChoiceAnswer;
 
 				Button btnDeleteAnswer = new()
 				{
 					AutoSize = true,
 					Location = new Point(btnAddAnswer.Location.X + btnAddAnswer.Width + 10, btnAddAnswer.Location.Y),
-					Name = "btnDeleteDropdownAnswer",
+					Name = "btnDeleteMultipleChoiceAnswer",
 					Text = "Poista vastaus"
 				};
-				btnDeleteAnswer.Click += DeleteDropdownAnswer;
+				btnDeleteAnswer.Click += DeleteMultipleChoiceAnswer;
 
 				
 				groupBox.Controls.Add(textBoxText);
 				groupBox.Controls.Add(labelText);
 				groupBox.Controls.Add(textBoxQuestion);
 				groupBox.Controls.Add(labelQuestion);
+				groupBox.Controls.Add(labelAnswer);
 				groupBox.Controls.Add(btnAddAnswer);
 				groupBox.Controls.Add(btnDeleteAnswer);
 
@@ -345,15 +380,15 @@ namespace MoodleSyntaxGenerator
 		}
 
 		/// <summary>
-		/// Adds an answer to a dropdown question
+		/// Adds an answer to a multiple choice question
 		/// </summary>
-		private void AddDropdownAnswer(object sender, EventArgs e)
+		private void AddMultipleChoiceAnswer(object sender, EventArgs e)
 		{
-			// Get the groupbox for a dropdown question
+			// Get the groupbox for a multiple choice question
 			var groupBox = _views[2];
 			int amountOfAnswers = 0;
 
-			var startLocation = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxDropdownText").Location;
+			var startLocation = groupBox.Controls.OfType<Label>().FirstOrDefault(c => c.Name == "lblMultipleChoiceAnswer").Location;
 
 			foreach (CheckBox cBox in groupBox.Controls.OfType<CheckBox>())
 			{
@@ -374,11 +409,11 @@ namespace MoodleSyntaxGenerator
 			TextBox textBoxAnswer = new()
 			{
 				Location = new Point(checkBoxIsCorrect.Location.X + 15, checkBoxIsCorrect.Location.Y),
-				Name = "txtBoxDropdownAnswer" + (amountOfAnswers + 1)
+				Name = "txtBoxMultipleChoiceAnswer" + (amountOfAnswers + 1)
 			};
 
-			var btnAddAnswer = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnAddDropdownAnswer");
-			var btnDeleteAnswer = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnDeleteDropdownAnswer");
+			var btnAddAnswer = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnAddMultipleChoiceAnswer");
+			var btnDeleteAnswer = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnDeleteMultipleChoiceAnswer");
 
 			// Move the button down
 			btnAddAnswer.Location = new Point(btnAddAnswer.Location.X, btnAddAnswer.Location.Y + _lineSpacing);
@@ -389,26 +424,26 @@ namespace MoodleSyntaxGenerator
 		}
 
 		/// <summary>
-		/// Delete the latest dropdown answer
+		/// Delete the latest multiple choice answer
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void DeleteDropdownAnswer(object sender, EventArgs e)
+		private void DeleteMultipleChoiceAnswer(object sender, EventArgs e)
 		{
-			// Get the groupbox for a dropdown question
+			// Get the groupbox for a multiple choice question
 			var groupBox = _views[2];
 
 			var textBoxes = groupBox.Controls.OfType<TextBox>().ToList();
 			var checkBoxes = groupBox.Controls.OfType<CheckBox>().ToList();
 
-			if (textBoxes.Count > 1)
+			if (checkBoxes.Count > 1)
 			{
 				groupBox.Controls.Remove(textBoxes[textBoxes.Count - 1]);
 				groupBox.Controls.Remove(checkBoxes[checkBoxes.Count - 1]);
 				
 
-				var btnAdd = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnAddDropdownAnswer");
-				var btnDelete = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnDeleteDropdownAnswer");
+				var btnAdd = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnAddMultipleChoiceAnswer");
+				var btnDelete = groupBox.Controls.OfType<Button>().FirstOrDefault(c => c.Name == "btnDeleteMultipleChoiceAnswer");
 
 				// Move the buttons up
 				btnAdd.Location = new Point(btnAdd.Location.X, btnAdd.Location.Y - _lineSpacing);
@@ -449,9 +484,17 @@ namespace MoodleSyntaxGenerator
 					Name = "txtBoxRadioQuestion"
 				};
 
-				Button btnAddAnswer = new()
+				Label lblAnswer = new()
 				{
 					Location = new Point(textBoxQuestion.Location.X, textBoxQuestion.Location.Y + _lineSpacing),
+					Name = "lblRadioAnswer",
+					Text = "Vastausvaihtoehdot",
+					AutoSize = true
+				};
+
+				Button btnAddAnswer = new()
+				{
+					Location = new Point(lblAnswer.Location.X, lblAnswer.Location.Y + _lineSpacing),
 					AutoSize = true,
 					Name = "btnAddRadioAnswer",
 					Text = "Lisää vastaus"
@@ -472,6 +515,7 @@ namespace MoodleSyntaxGenerator
 				groupBox.Controls.Add(labelText);
 				groupBox.Controls.Add(btnAddAnswer);
 				groupBox.Controls.Add(btnDeleteAnswer);
+				groupBox.Controls.Add(lblAnswer);
 
 				groupBox.Hide();
 				Controls.Add(groupBox);
@@ -485,10 +529,10 @@ namespace MoodleSyntaxGenerator
 		/// </summary>
 		private void AddRadioAnswer(object sender, EventArgs e)
 		{
-			var groupBox = _views[3]; // Get the groupbox for a dropdown question, _views[4] should do the same
+			var groupBox = _views[3]; // Get the groupbox for a multiple choice question, _views[4] should do the same
 			int amountOfAnswers = 0; // Start from 0, because the question is the first textbox
 
-			var startLocation = groupBox.Controls.OfType<TextBox>().FirstOrDefault(c => c.Name == "txtBoxRadioQuestion").Location;
+			var startLocation = groupBox.Controls.OfType<Label>().FirstOrDefault(c => c.Name == "lblRadioAnswer").Location;
 
 			foreach (TextBox cBox in groupBox.Controls.OfType<TextBox>())
 			{
@@ -523,7 +567,7 @@ namespace MoodleSyntaxGenerator
 		/// <param name="e"></param>
 		private void DeleteRadioAnswer(object sender, EventArgs e)
 		{
-			var groupBox = _views[3]; // Get the groupbox for a dropdown question, _views[4] should do the same
+			var groupBox = _views[3]; // Get the groupbox for a multiple choice question, _views[4] should do the same
 			var textBoxes = groupBox.Controls.OfType<TextBox>().ToList();
 
 			if (textBoxes.Count > 1)

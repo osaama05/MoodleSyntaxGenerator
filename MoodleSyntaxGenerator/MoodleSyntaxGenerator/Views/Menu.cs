@@ -131,6 +131,7 @@ namespace MoodleSyntaxGenerator
 			txtBoxOutput.Text = moodleSyntax;
 		}
 
+		// Generate syntax
 		/// <summary>
 		/// Generates the syntax for a numeric question based on the inputs
 		/// </summary>
@@ -198,7 +199,7 @@ namespace MoodleSyntaxGenerator
 		/// <param name="groupBoxToSearchFrom"></param>
 		/// <param name="isCaseSensitive"></param>
 		/// <returns></returns>
-		private string GenerateShortAnswerSyntax(GroupBox groupBoxToSearchFrom, bool isCaseSensitive)
+		private static string GenerateShortAnswerSyntax(GroupBox groupBoxToSearchFrom, bool isCaseSensitive)
 		{
 			groupBoxToSearchFrom.AutoSize = true;
 
@@ -223,7 +224,7 @@ namespace MoodleSyntaxGenerator
 		/// <param name="groupBoxToSearchFrom"></param>
 		/// <param name="isHorizontal"></param>
 		/// <returns></returns>
-		private string GenerateRadioSyntax(GroupBox groupBoxToSearchFrom, bool isHorizontal)
+		private static string GenerateRadioSyntax(GroupBox groupBoxToSearchFrom, bool isHorizontal)
 		{
 			List<TextBox> answers = new();
 			groupBoxToSearchFrom.AutoSize = true;
@@ -256,6 +257,7 @@ namespace MoodleSyntaxGenerator
 			}
 		}
 
+		// Create inputs
 		// Numeric
 		/// <summary>
 		/// Creates the input fields for a numeric question

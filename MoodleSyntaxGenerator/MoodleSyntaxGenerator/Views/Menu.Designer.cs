@@ -57,7 +57,7 @@
 			// btnGenerate
 			// 
 			btnGenerate.BackColor = SystemColors.ControlLightLight;
-			btnGenerate.Location = new Point(348, 56);
+			btnGenerate.Location = new Point(348, 70);
 			btnGenerate.Name = "btnGenerate";
 			btnGenerate.Size = new Size(75, 26);
 			btnGenerate.TabIndex = 2;
@@ -70,8 +70,7 @@
 			txtBoxOutput.Location = new Point(348, 27);
 			txtBoxOutput.Multiline = true;
 			txtBoxOutput.Name = "txtBoxOutput";
-			txtBoxOutput.ReadOnly = true;
-			txtBoxOutput.Size = new Size(376, 26);
+			txtBoxOutput.Size = new Size(376, 37);
 			txtBoxOutput.TabIndex = 3;
 			// 
 			// lblOutput

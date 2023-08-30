@@ -128,7 +128,7 @@ namespace MoodleSyntaxGenerator
 					MessageBox.Show("Et ole valinnut vastaustyyppiä");
 					break;
 			}
-			txtBoxOutput.Text = moodleSyntax;
+			txtBoxOutput.Text += moodleSyntax;
 		}
 
 		// Generate syntax

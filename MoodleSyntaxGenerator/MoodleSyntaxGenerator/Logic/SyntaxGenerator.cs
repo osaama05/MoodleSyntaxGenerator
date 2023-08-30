@@ -80,11 +80,15 @@
 			output = output + "}.";
 
 			return output;
+
+			// {1:MULTICHOICE%0%<#~%0%=#~%100%>#} \(0\)
 		}
 
 		public static string GenerateSyntaxForNumeric(string question, decimal answer, decimal tolerance = 0)
 		{
 			return "{" + $"1:{question}: ={answer}:{tolerance}" + "}";
+
+			// {1:NUMERICAL%100%4#}
 		}
 	}
 }

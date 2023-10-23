@@ -1,5 +1,5 @@
-﻿namespace MoodleSyntaxGenerator.Logic
-{
+﻿namespace SyntaxGenerator
+{ 
 	public class SyntaxGenerator
 	{
 		public SyntaxGenerator()

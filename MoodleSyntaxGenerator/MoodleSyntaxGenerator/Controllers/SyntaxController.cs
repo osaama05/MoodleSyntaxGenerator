@@ -1,12 +1,11 @@
-﻿using MoodleSyntaxGenerator.Logic;
-
-namespace MoodleSyntaxGenerator.Controllers
+﻿namespace MoodleSyntaxGenerator.Controllers
 {
 	public class SyntaxController
 	{
-		public SyntaxController()
+		private SyntaxGenerator.SyntaxGenerator _generator;
+		public SyntaxController(SyntaxGenerator.SyntaxGenerator gen)
 		{
-			
+			_generator = gen;
 		}
 
 		public static string GenerateNumeric(TextBox question, TextBox answer, TextBox tolerance)
@@ -26,7 +25,7 @@ namespace MoodleSyntaxGenerator.Controllers
 			{
 				if (decimal.TryParse(answerText, out _))
 				{
-					return SyntaxGenerator.GenerateSyntaxForNumeric(questionText, Convert.ToDecimal(answerText));
+					return SyntaxGenerator.SyntaxGenerator.GenerateSyntaxForNumeric(questionText, Convert.ToDecimal(answerText));
 				}
 
 				else
@@ -57,7 +56,7 @@ namespace MoodleSyntaxGenerator.Controllers
 			// Everything passed
 			else
 			{
-				return SyntaxGenerator.GenerateSyntaxForNumeric(questionText, Convert.ToDecimal(answerText), Convert.ToDecimal(toleranceText));
+				return SyntaxGenerator.SyntaxGenerator.GenerateSyntaxForNumeric(questionText, Convert.ToDecimal(answerText), Convert.ToDecimal(toleranceText));
 			}
 
 		}
@@ -79,7 +78,7 @@ namespace MoodleSyntaxGenerator.Controllers
 
 			else
 			{
-				return SyntaxGenerator.GenerateSyntaxForShortAnswer(questionText, answerText, isCaseSensitive);	
+				return SyntaxGenerator.SyntaxGenerator.GenerateSyntaxForShortAnswer(questionText, answerText, isCaseSensitive);	
 			}
 		}
 
@@ -118,7 +117,7 @@ namespace MoodleSyntaxGenerator.Controllers
 			// Everything passed
 			else
 			{
-				return SyntaxGenerator.GenerateSyntaxForMultipleChoice(textString, questionText, answerChoices);
+				return SyntaxGenerator.SyntaxGenerator.GenerateSyntaxForMultipleChoice(textString, questionText, answerChoices);
 			}
 		}
 
@@ -147,7 +146,7 @@ namespace MoodleSyntaxGenerator.Controllers
 			// Everything passed
 			else 
 			{ 
-				return SyntaxGenerator.GenerateyntaxForRadioButtons(questionText, answersText, isHorizontal);
+				return SyntaxGenerator.SyntaxGenerator.GenerateyntaxForRadioButtons(questionText, answersText, isHorizontal);
 			}
 		}
 	}

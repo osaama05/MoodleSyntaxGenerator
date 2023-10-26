@@ -1,6 +1,3 @@
-using MoodleSyntaxGenerator.Controllers;
-using SyntaxGenerator;
-
 namespace MoodleSyntaxGenerator
 {
 	internal static class Program

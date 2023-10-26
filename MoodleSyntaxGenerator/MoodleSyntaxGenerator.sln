@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoodleSyntaxGenerator", "Mo
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MoodleSyntaxGenSetup", "MSGSetup\MSGSetup.vdproj", "{B63833DE-ABD8-4121-AB27-44D7776C2969}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxGenerator", "SyntaxGenerator\SyntaxGenerator.csproj", "{571F1847-5AD7-4648-AA9E-297876B71258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyntaxGenerator", "SyntaxGenerator\SyntaxGenerator.csproj", "{571F1847-5AD7-4648-AA9E-297876B71258}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorUI", "BlazorUI\BlazorUI.csproj", "{34F1370C-6ACB-4619-B7F7-DDEF6A6235F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{571F1847-5AD7-4648-AA9E-297876B71258}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{571F1847-5AD7-4648-AA9E-297876B71258}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{571F1847-5AD7-4648-AA9E-297876B71258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34F1370C-6ACB-4619-B7F7-DDEF6A6235F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34F1370C-6ACB-4619-B7F7-DDEF6A6235F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34F1370C-6ACB-4619-B7F7-DDEF6A6235F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34F1370C-6ACB-4619-B7F7-DDEF6A6235F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
